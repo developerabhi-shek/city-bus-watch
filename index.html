@@ -566,6 +566,48 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
+            <!-- Route Search Section -->
+            <div style="background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; margin-bottom: 3rem; box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);">
+                <h2 style="text-align: center; font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem; color: var(--primary);">🗺️ Plan Your Journey</h2>
+                
+                <div style="display: grid; grid-template-columns: 1fr auto 1fr auto; gap: 1rem; align-items: end; margin-bottom: 1.5rem;">
+                    <div>
+                        <label style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--foreground);">From</label>
+                        <input type="text" id="fromLocation" placeholder="Enter starting point" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--background); color: var(--foreground);">
+                    </div>
+                    
+                    <button id="swapLocations" style="padding: 0.75rem; background: var(--muted); border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; transition: all 0.3s;">
+                        🔄
+                    </button>
+                    
+                    <div>
+                        <label style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--foreground);">To</label>
+                        <input type="text" id="toLocation" placeholder="Enter destination" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--background); color: var(--foreground);">
+                    </div>
+                    
+                    <button id="searchRoute" class="btn btn-primary" style="padding: 0.75rem 1.5rem;">
+                        🔍 Search
+                    </button>
+                </div>
+                
+                <!-- Quick Route Suggestions -->
+                <div>
+                    <p style="font-size: 0.875rem; color: var(--muted-foreground); margin-bottom: 0.75rem;">Popular Routes:</p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                        <button class="quick-route btn-outline" style="padding: 0.25rem 0.75rem; font-size: 0.75rem; border-radius: calc(var(--radius) - 2px); background: var(--muted); border: 1px solid var(--border); cursor: pointer;" data-from="Railway Station" data-to="City Center">Railway Station → City Center</button>
+                        <button class="quick-route btn-outline" style="padding: 0.25rem 0.75rem; font-size: 0.75rem; border-radius: calc(var(--radius) - 2px); background: var(--muted); border: 1px solid var(--border); cursor: pointer;" data-from="University" data-to="Hospital">University → Hospital</button>
+                        <button class="quick-route btn-outline" style="padding: 0.25rem 0.75rem; font-size: 0.75rem; border-radius: calc(var(--radius) - 2px); background: var(--muted); border: 1px solid var(--border); cursor: pointer;" data-from="Bus Stand" data-to="Market">Bus Stand → Market</button>
+                        <button class="quick-route btn-outline" style="padding: 0.25rem 0.75rem; font-size: 0.75rem; border-radius: calc(var(--radius) - 2px); background: var(--muted); border: 1px solid var(--border); cursor: pointer;" data-from="Airport" data-to="Mall">Airport → Mall</button>
+                    </div>
+                </div>
+                
+                <!-- Route Results (Hidden by default) -->
+                <div id="routeResults" style="display: none; margin-top: 1.5rem; padding: 1.5rem; background: var(--muted); border-radius: var(--radius);">
+                    <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem; color: var(--primary);">🚌 Available Routes</h3>
+                    <div id="routeList"></div>
+                </div>
+            </div>
+
             <div class="hero-grid">
                 <div>
                     <h1 class="hero-title">
@@ -574,15 +616,15 @@
                     </h1>
                     <p class="hero-subtitle">
                         Real-time tracking for public transport in small cities. Get accurate arrival times, 
-                        route information, and never wait in uncertainty again.
+                        route information, and smart journey planning.
                     </p>
                     <div class="hero-buttons">
                         <a href="#tracking" class="btn btn-hero">
-                            Start Tracking
+                            🚀 Start Tracking
                             <span>→</span>
                         </a>
                         <a href="#features" class="btn btn-outline btn-lg">
-                            View Routes
+                            🗺️ Explore Features
                         </a>
                     </div>
                     <div class="hero-features">
@@ -930,10 +972,197 @@
             setupSmoothScrolling();
         });
 
-        // Add some interactivity to cards
+        // Mock route data for search
+        const mockRoutes = [
+            { routeId: "R1A", from: "Railway Station", to: "City Center", buses: ["BUS001", "BUS004"], duration: "15 min", fare: "₹12", stops: 8 },
+            { routeId: "R2B", from: "University", to: "Hospital", buses: ["BUS002", "BUS005"], duration: "22 min", fare: "₹15", stops: 12 },
+            { routeId: "R3C", from: "Bus Stand", to: "Market", buses: ["BUS003", "BUS006"], duration: "18 min", fare: "₹10", stops: 9 },
+            { routeId: "R4D", from: "Airport", to: "Mall", buses: ["BUS007", "BUS008"], duration: "25 min", fare: "₹20", stops: 14 },
+            { routeId: "R1B", from: "City Center", to: "Railway Station", buses: ["BUS001", "BUS004"], duration: "15 min", fare: "₹12", stops: 8 },
+            { routeId: "R2C", from: "Hospital", to: "University", buses: ["BUS002", "BUS005"], duration: "22 min", fare: "₹15", stops: 12 }
+        ];
+
+        // Route search functionality
+        function setupRouteSearch() {
+            const fromInput = document.getElementById('fromLocation');
+            const toInput = document.getElementById('toLocation');
+            const swapBtn = document.getElementById('swapLocations');
+            const searchBtn = document.getElementById('searchRoute');
+            const routeResults = document.getElementById('routeResults');
+            const routeList = document.getElementById('routeList');
+            const quickRoutes = document.querySelectorAll('.quick-route');
+
+            // Swap locations
+            swapBtn.addEventListener('click', () => {
+                const temp = fromInput.value;
+                fromInput.value = toInput.value;
+                toInput.value = temp;
+                swapBtn.style.transform = 'rotate(180deg)';
+                setTimeout(() => swapBtn.style.transform = 'rotate(0deg)', 300);
+            });
+
+            // Quick route selection
+            quickRoutes.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    fromInput.value = btn.dataset.from;
+                    toInput.value = btn.dataset.to;
+                    searchRoutes();
+                });
+            });
+
+            // Search routes
+            searchBtn.addEventListener('click', searchRoutes);
+            fromInput.addEventListener('keypress', (e) => e.key === 'Enter' && searchRoutes());
+            toInput.addEventListener('keypress', (e) => e.key === 'Enter' && searchRoutes());
+
+            function searchRoutes() {
+                const from = fromInput.value.trim();
+                const to = toInput.value.trim();
+                
+                if (!from || !to) {
+                    alert('Please enter both starting point and destination');
+                    return;
+                }
+
+                // Find matching routes
+                const matches = mockRoutes.filter(route => 
+                    route.from.toLowerCase().includes(from.toLowerCase()) && 
+                    route.to.toLowerCase().includes(to.toLowerCase())
+                );
+
+                if (matches.length === 0) {
+                    routeList.innerHTML = `
+                        <div style="text-align: center; padding: 2rem; color: var(--muted-foreground);">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">🚫</div>
+                            <h4 style="margin-bottom: 0.5rem;">No Direct Routes Found</h4>
+                            <p style="font-size: 0.875rem;">Try different locations or check back later for new routes.</p>
+                        </div>
+                    `;
+                } else {
+                    routeList.innerHTML = matches.map(route => `
+                        <div style="background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: between; align-items: start; margin-bottom: 1rem;">
+                                <div>
+                                    <h4 style="font-size: 1.125rem; font-weight: 600; color: var(--primary); margin-bottom: 0.5rem;">${route.routeId}: ${route.from} → ${route.to}</h4>
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                                        <div>
+                                            <span style="color: var(--muted-foreground); font-size: 0.875rem;">Duration:</span>
+                                            <p style="font-weight: 500;">⏱️ ${route.duration}</p>
+                                        </div>
+                                        <div>
+                                            <span style="color: var(--muted-foreground); font-size: 0.875rem;">Fare:</span>
+                                            <p style="font-weight: 500;">💰 ${route.fare}</p>
+                                        </div>
+                                        <div>
+                                            <span style="color: var(--muted-foreground); font-size: 0.875rem;">Stops:</span>
+                                            <p style="font-weight: 500;">🛑 ${route.stops} stops</p>
+                                        </div>
+                                    </div>
+                                    <div style="margin-bottom: 1rem;">
+                                        <span style="color: var(--muted-foreground); font-size: 0.875rem;">Available Buses:</span>
+                                        <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                                            ${route.buses.map(bus => `<span class="badge badge-default">${bus}</span>`).join('')}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 1rem;">
+                                <button class="btn btn-primary" style="flex: 1;">🚌 Track Buses</button>
+                                <button class="btn btn-outline" style="flex: 1;">🗺️ View Route Map</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                routeResults.style.display = 'block';
+                routeResults.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Enhanced bus data with more variety
+        const enhancedBuses = [
+            { id: "BUS001", route: "Route 1A", destination: "City Center", arrivalTime: "2 min", status: "approaching", occupancy: "medium", nextStop: "Main Street", live: true },
+            { id: "BUS002", route: "Route 2B", destination: "University", arrivalTime: "7 min", status: "on-time", occupancy: "low", nextStop: "Park Avenue", live: true },
+            { id: "BUS003", route: "Route 3C", destination: "Hospital", arrivalTime: "12 min", status: "delayed", occupancy: "high", nextStop: "Station Road", live: true },
+            { id: "BUS004", route: "Route 1A", destination: "Railway Station", arrivalTime: "18 min", status: "on-time", occupancy: "medium", nextStop: "Market Square", live: true },
+            { id: "BUS005", route: "Route 2B", destination: "Tech Park", arrivalTime: "23 min", status: "approaching", occupancy: "low", nextStop: "Shopping Mall", live: true },
+            { id: "BUS006", route: "Route 4D", destination: "Airport", arrivalTime: "28 min", status: "on-time", occupancy: "high", nextStop: "Bus Terminal", live: true }
+        ];
+
+        // Update mock buses with enhanced data
+        mockBuses.splice(0, mockBuses.length, ...enhancedBuses);
+
+        // Enhanced bus card with live indicator
+        function createEnhancedBusCard(bus) {
+            return `
+                <div class="bus-card" style="position: relative; ${bus.live ? 'border-left: 4px solid var(--success);' : ''}">
+                    ${bus.live ? '<div style="position: absolute; top: 1rem; right: 1rem; width: 8px; height: 8px; background: var(--success); border-radius: 50%; animation: pulse 2s infinite;"></div>' : ''}
+                    <div class="bus-header">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                                <h3 style="font-size: 1.125rem; font-weight: 600; margin: 0;">${bus.route}</h3>
+                                ${bus.live ? '<span style="font-size: 0.75rem; color: var(--success); font-weight: 500;">● LIVE</span>' : ''}
+                            </div>
+                            <p style="color: var(--muted-foreground); font-size: 0.875rem; margin: 0;">${bus.destination}</p>
+                        </div>
+                        <span class="badge ${getStatusBadge(bus.status)}">${bus.status.replace('-', ' ')}</span>
+                    </div>
+                    
+                    <div class="bus-info">
+                        <div class="bus-icon primary">🚌</div>
+                        <div>
+                            <p style="font-weight: 500; margin: 0;">Bus ID: ${bus.id}</p>
+                            <p style="font-size: 0.875rem; color: var(--muted-foreground); margin: 0;">Arriving in ${bus.arrivalTime}</p>
+                        </div>
+                    </div>
+
+                    <div class="bus-info">
+                        <div class="bus-icon secondary">📍</div>
+                        <div>
+                            <p style="font-weight: 500; margin: 0;">Next Stop</p>
+                            <p style="font-size: 0.875rem; color: var(--muted-foreground); margin: 0;">${bus.nextStop}</p>
+                        </div>
+                    </div>
+
+                    <div class="occupancy-row">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="font-size: 1rem;">👥</span>
+                            <span style="font-size: 0.875rem; color: var(--muted-foreground);">Occupancy:</span>
+                        </div>
+                        <span class="badge ${getOccupancyBadge(bus.occupancy)}">${bus.occupancy}</span>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 1rem;">
+                        <button class="btn btn-primary" style="font-size: 0.875rem;">📍 Track</button>
+                        <button class="btn btn-outline" style="font-size: 0.875rem;">🔔 Notify</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Add pulse animation for live indicator
+        const pulseStyle = document.createElement('style');
+        pulseStyle.textContent = `
+            @keyframes pulse {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0.5; }
+            }
+        `;
+        document.head.appendChild(pulseStyle);
+
+        // Enhanced render function
+        function renderEnhancedBuses() {
+            const busGrid = document.getElementById('busGrid');
+            busGrid.innerHTML = mockBuses.map(createEnhancedBusCard).join('');
+        }
+
+        // Initialize enhanced features
         document.addEventListener('DOMContentLoaded', () => {
-            // Add hover effects and click handlers as needed
-            console.log('CityBus Watch initialized successfully!');
+            renderEnhancedBuses();
+            setupRefresh();
+            setupSmoothScrolling();
+            setupRouteSearch();
+            console.log('Enhanced CityBus Watch initialized with route search!');
         });
     </script>
 </body>
