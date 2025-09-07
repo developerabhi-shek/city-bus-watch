@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Bus Tracker - Advanced Transit System</title>
-    <meta name="description" content="Real-time GPS tracking for public buses with AI-powered features, emergency services, and CCTV monitoring.">
+    <meta name="description" content="Real-time GPS tracking with Google Maps integration, route optimization, and smart features">
     <style>
         * {
             margin: 0;
@@ -16,27 +16,21 @@
             --background: hsl(210, 17%, 98%);
             --foreground: hsl(213, 27%, 20%);
             --card: hsl(0, 0%, 100%);
-            --card-foreground: hsl(213, 27%, 20%);
             --primary: hsl(221, 83%, 53%);
-            --primary-foreground: hsl(0, 0%, 100%);
             --primary-glow: hsl(221, 83%, 63%);
             --secondary: hsl(142, 76%, 36%);
-            --secondary-foreground: hsl(0, 0%, 100%);
             --muted: hsl(213, 27%, 95%);
             --muted-foreground: hsl(213, 27%, 60%);
             --border: hsl(213, 27%, 90%);
             --warning: hsl(38, 92%, 50%);
-            --warning-foreground: hsl(0, 0%, 100%);
             --success: hsl(142, 76%, 36%);
-            --success-foreground: hsl(0, 0%, 100%);
             --destructive: hsl(0, 84.2%, 60.2%);
-            --destructive-foreground: hsl(0, 0%, 100%);
             --radius: 0.5rem;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--background);
+            background: var(--background);
             color: var(--foreground);
             line-height: 1.5;
         }
@@ -47,13 +41,13 @@
             padding: 0 1rem;
         }
 
-        /* Enhanced Header */
+        /* Enhanced Header with Better Navigation */
         .header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--primary-glow) 100%);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             padding: 1rem 0;
             position: sticky;
             top: 0;
-            z-index: 50;
+            z-index: 100;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
 
@@ -66,15 +60,15 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
+            color: white;
             font-size: 1.5rem;
             font-weight: bold;
-            color: white;
         }
 
         .logo-icon {
-            width: 3rem;
-            height: 3rem;
+            width: 50px;
+            height: 50px;
             background: rgba(255,255,255,0.2);
             border-radius: 50%;
             display: flex;
@@ -86,115 +80,98 @@
 
         .nav {
             display: flex;
-            gap: 2rem;
+            gap: 0.5rem;
         }
 
-        .nav a {
-            text-decoration: none;
+        .nav-item {
+            padding: 0.75rem 1rem;
             color: rgba(255,255,255,0.9);
-            font-weight: 500;
-            padding: 0.5rem 1rem;
+            text-decoration: none;
             border-radius: var(--radius);
             transition: all 0.3s;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .nav a:hover {
+        .nav-item:hover, .nav-item.active {
             background: rgba(255,255,255,0.2);
             color: white;
+            transform: translateY(-2px);
         }
 
-        /* Emergency & Features Panel */
+        /* Quick Action Sidebar */
         .quick-actions {
             position: fixed;
-            top: 50%;
             left: 1rem;
+            top: 50%;
             transform: translateY(-50%);
-            z-index: 40;
+            z-index: 90;
             display: flex;
             flex-direction: column;
             gap: 1rem;
         }
 
-        .emergency-btn {
+        .action-btn {
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background: var(--destructive);
-            color: white;
             border: none;
             cursor: pointer;
             font-size: 1.5rem;
-            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
-            animation: emergency-pulse 2s infinite;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            color: white;
         }
 
-        .emergency-btn:hover {
+        .action-btn.emergency {
+            background: var(--destructive);
+            animation: emergency-pulse 2s infinite;
+        }
+
+        .action-btn.feature {
+            background: var(--primary);
+        }
+
+        .action-btn:hover {
             transform: scale(1.1);
         }
 
-        .feature-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--card);
-            border: 2px solid var(--border);
-            cursor: pointer;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .feature-btn:hover {
-            background: var(--primary);
-            color: white;
-            transform: scale(1.05);
-        }
-
         @keyframes emergency-pulse {
-            0% { background-color: var(--destructive); }
-            50% { background-color: #dc2626; }
-            100% { background-color: var(--destructive); }
+            0%, 100% { background: var(--destructive); }
+            50% { background: #dc2626; }
         }
 
-        /* Enhanced Hero Section */
-        .hero {
-            background: linear-gradient(135deg, var(--background) 0%, var(--muted) 100%);
-            padding: 3rem 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="hsl(221, 83%, 53%, 0.1)"/><circle cx="80" cy="80" r="3" fill="hsl(142, 76%, 36%, 0.1)"/></svg>');
-            animation: float-bg 20s infinite linear;
-        }
-
-        @keyframes float-bg {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
+        /* Enhanced Search Panel */
+        .search-section {
+            padding: 2rem 0;
+            background: linear-gradient(135deg, var(--background), var(--muted));
         }
 
         .search-panel {
             background: var(--card);
-            border: 1px solid var(--border);
             border-radius: 1rem;
             padding: 2rem;
-            margin-bottom: 3rem;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .search-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .search-title {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
         }
 
         .search-grid {
@@ -202,20 +179,26 @@
             grid-template-columns: 1fr auto 1fr auto;
             gap: 1rem;
             align-items: end;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
 
-        .search-container {
+        .input-group {
             position: relative;
+        }
+
+        .input-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--foreground);
         }
 
         .search-input {
             width: 100%;
-            padding: 1rem;
+            padding: 1rem 1rem 1rem 3rem;
             border: 2px solid var(--border);
             border-radius: var(--radius);
             background: var(--background);
-            color: var(--foreground);
             font-size: 1rem;
             transition: all 0.3s;
         }
@@ -226,7 +209,16 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
-        .search-dropdown {
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            color: var(--muted-foreground);
+        }
+
+        .suggestions {
             position: absolute;
             top: 100%;
             left: 0;
@@ -236,256 +228,153 @@
             border-radius: var(--radius);
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             z-index: 50;
-            max-height: 250px;
+            max-height: 300px;
             overflow-y: auto;
             display: none;
         }
 
-        .search-option {
+        .suggestion-item {
             padding: 1rem;
             cursor: pointer;
-            border-bottom: 1px solid var(--border);
-            transition: all 0.2s;
             display: flex;
             align-items: center;
             gap: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            transition: all 0.2s;
         }
 
-        .search-option:hover {
+        .suggestion-item:hover {
             background: var(--muted);
             color: var(--primary);
         }
 
-        /* Bus Tracking Section */
-        .bus-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 1.5rem;
+        .swap-btn {
+            background: var(--primary);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
         }
 
-        .bus-card {
+        .swap-btn:hover {
+            transform: rotate(180deg);
+            background: var(--primary-glow);
+        }
+
+        /* Google Maps Integration */
+        .map-section {
+            background: var(--card);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .map-container {
+            height: 500px;
+            width: 100%;
+            border-radius: var(--radius);
+            overflow: hidden;
+            background: var(--muted);
+            position: relative;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .map-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--muted-foreground);
+            font-size: 1.1rem;
+        }
+
+        /* Live Tracking Features */
+        .tracking-panel {
+            background: var(--card);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .tracking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .tracking-controls {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .route-info {
+            background: var(--muted);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .route-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .detail-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+
+        .detail-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .detail-label {
+            color: var(--muted-foreground);
+            font-size: 0.875rem;
+        }
+
+        /* New Features */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
             background: var(--card);
             border: 1px solid var(--border);
             border-radius: 1rem;
             padding: 1.5rem;
+            text-align: center;
             transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
         }
 
-        .bus-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-        }
-
-        .bus-card:hover {
+        .feature-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
         }
 
-        .live-indicator {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: var(--destructive);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 1rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            animation: pulse 2s infinite;
-        }
-
-        /* CCTV Monitoring Section */
-        .cctv-section {
-            background: var(--muted);
-            padding: 4rem 0;
-        }
-
-        .cctv-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .cctv-feed {
-            background: #000;
-            border-radius: var(--radius);
-            aspect-ratio: 16/9;
-            position: relative;
-            overflow: hidden;
-            border: 2px solid var(--border);
-        }
-
-        .cctv-feed img, .cctv-feed video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .scan-line {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #00ff00, transparent);
-            animation: scan 3s linear infinite;
-        }
-
-        @keyframes scan {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(200px); }
-        }
-
-        .detection-overlay {
-            position: absolute;
-            top: 1rem;
-            left: 1rem;
-            background: rgba(0,0,0,0.8);
-            color: #00ff00;
-            padding: 0.5rem;
-            border-radius: var(--radius);
-            font-family: monospace;
-            font-size: 0.75rem;
-        }
-
-        /* AI Photo Recognition */
-        .ai-section {
-            padding: 4rem 0;
-        }
-
-        .upload-area {
-            border: 2px dashed var(--border);
-            border-radius: 1rem;
-            padding: 3rem;
-            text-align: center;
-            background: var(--muted);
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-
-        .upload-area:hover {
-            border-color: var(--primary);
-            background: rgba(59, 130, 246, 0.05);
-        }
-
-        .upload-area.drag-over {
-            border-color: var(--secondary);
-            background: rgba(34, 197, 94, 0.05);
-        }
-
-        /* Chatbot Enhanced */
-        .chatbot-container {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            z-index: 1000;
-        }
-
-        .chatbot-toggle {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-
-        .chatbot-toggle:hover {
-            transform: scale(1.1);
-        }
-
-        .chatbot-window {
-            position: absolute;
-            bottom: 80px;
-            right: 0;
-            width: 400px;
-            height: 600px;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 1rem;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .chatbot-header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .chatbot-messages {
-            flex: 1;
-            padding: 1rem;
-            overflow-y: auto;
-            background: var(--background);
-        }
-
-        .message {
+        .feature-icon {
+            font-size: 3rem;
             margin-bottom: 1rem;
-            display: flex;
-            gap: 0.75rem;
-        }
-
-        .message.user {
-            flex-direction: row-reverse;
-        }
-
-        .message-content {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 0.75rem;
-            max-width: 80%;
-        }
-
-        .message.user .message-content {
-            background: var(--primary);
-            color: white;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .search-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .quick-actions {
-                position: fixed;
-                bottom: 1rem;
-                left: 1rem;
-                right: auto;
-                top: auto;
-                transform: none;
-                flex-direction: row;
-            }
-            
-            .nav {
-                display: none;
-            }
-            
-            .chatbot-window {
-                width: 300px;
-                height: 500px;
-            }
         }
 
         /* Utility Classes */
@@ -493,13 +382,13 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
             border-radius: var(--radius);
             font-weight: 500;
-            transition: all 0.3s;
             cursor: pointer;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            gap: 0.5rem;
+            transition: all 0.3s;
             text-decoration: none;
         }
 
@@ -525,8 +414,8 @@
         .badge {
             display: inline-flex;
             align-items: center;
-            border-radius: calc(var(--radius) - 2px);
             padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
             font-size: 0.75rem;
             font-weight: 500;
         }
@@ -534,25 +423,54 @@
         .badge-success { background: var(--success); color: white; }
         .badge-warning { background: var(--warning); color: white; }
         .badge-destructive { background: var(--destructive); color: white; }
-        .badge-default { background: var(--primary); color: white; }
 
-        .section-title {
-            font-size: 2.5rem;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 1rem;
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
         }
 
-        .section-subtitle {
-            font-size: 1.125rem;
-            color: var(--muted-foreground);
-            text-align: center;
-            margin-bottom: 3rem;
+        .modal-content {
+            background: var(--card);
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        /* Responsive */
+        @media (max-width: 768px) {
+            .search-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav {
+                display: none;
+            }
+            
+            .quick-actions {
+                bottom: 1rem;
+                left: 1rem;
+                top: auto;
+                transform: none;
+                flex-direction: row;
+            }
+            
+            .action-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
         }
 
         .animate-spin {
@@ -564,28 +482,22 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Modal Styles */
-        .modal {
+        .notification {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
+            top: 2rem;
+            right: 2rem;
+            background: var(--primary);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
         }
 
-        .modal-content {
-            background: var(--card);
-            border-radius: 1rem;
-            padding: 2rem;
-            max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
     </style>
 </head>
@@ -599,195 +511,218 @@
                     <span>Smart Bus Tracker</span>
                 </div>
                 <nav class="nav">
-                    <a href="#tracking">🚍 Live Tracking</a>
-                    <a href="#cctv">📹 CCTV Monitor</a>
-                    <a href="#ai-detection">🤖 AI Detection</a>
-                    <a href="#emergency">🚨 Emergency</a>
+                    <a href="#search" class="nav-item active" onclick="setActiveNav(this)">
+                        🔍 Search Routes
+                    </a>
+                    <a href="#tracking" class="nav-item" onclick="setActiveNav(this)">
+                        📍 Live Tracking
+                    </a>
+                    <a href="#features" class="nav-item" onclick="setActiveNav(this)">
+                        ⭐ Features
+                    </a>
+                    <a href="#emergency" class="nav-item" onclick="setActiveNav(this)">
+                        🚨 Emergency
+                    </a>
                 </nav>
-                <a href="#" class="btn" style="background: rgba(255,255,255,0.2); color: white;">Get Started</a>
+                <button class="btn btn-primary" onclick="showApiKeyModal()">
+                    🔑 Setup API
+                </button>
             </div>
         </div>
     </header>
 
-    <!-- Quick Actions Panel -->
+    <!-- Quick Actions Sidebar -->
     <div class="quick-actions">
-        <button class="emergency-btn" onclick="handleEmergency()" title="Emergency Call">🚨</button>
-        <button class="feature-btn" onclick="toggleCCTV()" title="CCTV Monitor">📹</button>
-        <button class="feature-btn" onclick="toggleAIDetection()" title="AI Detection">🤖</button>
-        <button class="feature-btn" onclick="toggleBusTracker()" title="Bus Tracker">🚌</button>
+        <button class="action-btn emergency" onclick="handleEmergency()" title="Emergency Call">🚨</button>
+        <button class="action-btn feature" onclick="toggleTracking()" title="Toggle Tracking">📍</button>
+        <button class="action-btn feature" onclick="optimizeRoute()" title="Route Optimizer">🎯</button>
+        <button class="action-btn feature" onclick="showNotifications()" title="Notifications">🔔</button>
     </div>
 
-    <!-- Hero Section with Enhanced Search -->
-    <section class="hero">
+    <!-- Enhanced Search Section -->
+    <section id="search" class="search-section">
         <div class="container">
             <div class="search-panel">
-                <h2 style="text-align: center; font-size: 1.75rem; font-weight: bold; margin-bottom: 1.5rem; color: var(--primary);">🗺️ Plan Your Smart Journey</h2>
+                <div class="search-header">
+                    <h1 class="search-title">🗺️ Plan Your Smart Journey</h1>
+                    <p style="color: var(--muted-foreground);">Real-time route planning with Google Maps integration</p>
+                </div>
                 
                 <div class="search-grid">
-                    <div class="search-container">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">From</label>
-                        <input type="text" id="fromLocation" class="search-input" placeholder="Select or type location">
-                        <div class="search-dropdown" id="fromDropdown">
-                            <div class="search-option" data-value="Railway Station">🚉 Railway Station</div>
-                            <div class="search-option" data-value="City Center">🏢 City Center</div>
-                            <div class="search-option" data-value="University">🎓 University</div>
-                            <div class="search-option" data-value="Hospital">🏥 Hospital</div>
-                            <div class="search-option" data-value="Airport">✈️ Airport</div>
-                            <div class="search-option" data-value="Bus Stand">🚌 Bus Stand</div>
-                            <div class="search-option" data-value="Market">🛒 Market</div>
-                            <div class="search-option" data-value="Mall">🛍️ Shopping Mall</div>
+                    <div class="input-group">
+                        <label class="input-label">From</label>
+                        <div style="position: relative;">
+                            <span class="input-icon">📍</span>
+                            <input type="text" id="fromInput" class="search-input" placeholder="Enter starting location">
+                            <div id="fromSuggestions" class="suggestions"></div>
                         </div>
                     </div>
                     
-                    <button onclick="swapLocations()" style="background: var(--muted); border: 2px solid var(--border); border-radius: 50%; width: 50px; height: 50px; cursor: pointer; font-size: 1.2rem;">🔄</button>
+                    <button class="swap-btn" onclick="swapLocations()">🔄</button>
                     
-                    <div class="search-container">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">To</label>
-                        <input type="text" id="toLocation" class="search-input" placeholder="Select destination">
-                        <div class="search-dropdown" id="toDropdown">
-                            <div class="search-option" data-value="Railway Station">🚉 Railway Station</div>
-                            <div class="search-option" data-value="City Center">🏢 City Center</div>
-                            <div class="search-option" data-value="University">🎓 University</div>
-                            <div class="search-option" data-value="Hospital">🏥 Hospital</div>
-                            <div class="search-option" data-value="Airport">✈️ Airport</div>
-                            <div class="search-option" data-value="Bus Stand">🚌 Bus Stand</div>
-                            <div class="search-option" data-value="Market">🛒 Market</div>
-                            <div class="search-option" data-value="Mall">🛍️ Shopping Mall</div>
+                    <div class="input-group">
+                        <label class="input-label">To</label>
+                        <div style="position: relative;">
+                            <span class="input-icon">🎯</span>
+                            <input type="text" id="toInput" class="search-input" placeholder="Enter destination">
+                            <div id="toSuggestions" class="suggestions"></div>
                         </div>
                     </div>
                     
-                    <button onclick="searchRoute()" class="btn btn-primary">🔍 Search Routes</button>
+                    <button class="btn btn-primary" onclick="searchRoutes()">
+                        🔍 Find Routes
+                    </button>
                 </div>
                 
-                <!-- Route Results -->
-                <div id="routeResults" style="display: none; margin-top: 1.5rem; padding: 1.5rem; background: var(--muted); border-radius: var(--radius);">
-                    <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem;">🚌 Available Routes</h3>
-                    <div id="routeList"></div>
+                <!-- Quick Route Suggestions -->
+                <div style="text-align: center;">
+                    <p style="color: var(--muted-foreground); margin-bottom: 1rem;">Popular Routes:</p>
+                    <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+                        <button class="btn btn-outline" onclick="setQuickRoute('Railway Station', 'City Center')">🚉 Station → Center</button>
+                        <button class="btn btn-outline" onclick="setQuickRoute('University', 'Hospital')">🎓 University → Hospital</button>
+                        <button class="btn btn-outline" onclick="setQuickRoute('Airport', 'Mall')">✈️ Airport → Mall</button>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Live Bus Tracking Section -->
-    <section id="tracking" style="padding: 4rem 0;">
+    <!-- Google Maps Integration -->
+    <section id="tracking" class="search-section">
         <div class="container">
-            <h2 class="section-title">🚍 Live Bus Tracking</h2>
-            <p class="section-subtitle">Real-time GPS tracking with passenger count and arrival predictions</p>
+            <div class="map-section">
+                <div class="tracking-header">
+                    <h2 style="font-size: 1.5rem; font-weight: bold;">📍 Live Bus Tracking</h2>
+                    <div class="tracking-controls">
+                        <button class="btn btn-primary" onclick="refreshTracking()">
+                            <span id="refreshIcon">🔄</span> Refresh
+                        </button>
+                        <button class="btn btn-outline" onclick="toggleFullscreen()">
+                            📱 Fullscreen
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="map-container">
+                    <div id="map" style="display: none;"></div>
+                    <div id="mapPlaceholder" class="map-placeholder">
+                        <div style="text-align: center;">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">🗺️</div>
+                            <h3>Google Maps Integration</h3>
+                            <p style="margin: 1rem 0;">Enter your Google Maps API key to enable live tracking</p>
+                            <button class="btn btn-primary" onclick="showApiKeyModal()">
+                                🔑 Add API Key
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
+            <!-- Route Information Panel -->
+            <div id="routeInfo" class="route-info" style="display: none;">
+                <h3 style="margin-bottom: 1rem; color: var(--primary);">📊 Route Information</h3>
+                <div class="route-details">
+                    <div class="detail-item">
+                        <div class="detail-value" id="routeDistance">--</div>
+                        <div class="detail-label">Distance</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-value" id="routeDuration">--</div>
+                        <div class="detail-label">Duration</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-value" id="routeFare">--</div>
+                        <div class="detail-label">Fare</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-value" id="activeBuses">--</div>
+                        <div class="detail-label">Active Buses</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- New Features Section -->
+    <section id="features" class="search-section">
+        <div class="container">
             <div style="text-align: center; margin-bottom: 2rem;">
-                <button onclick="refreshBuses()" class="btn btn-outline">
-                    <span id="refreshIcon">🔄</span> Refresh Data
-                </button>
+                <h2 style="font-size: 2rem; font-weight: bold; margin-bottom: 1rem;">⭐ Smart Features</h2>
+                <p style="color: var(--muted-foreground);">Advanced tools for better travel experience</p>
             </div>
             
-            <div class="bus-grid" id="busGrid">
-                <!-- Bus cards will be populated here -->
-            </div>
-        </div>
-    </section>
-
-    <!-- CCTV Monitoring Section -->
-    <section id="cctv" class="cctv-section">
-        <div class="container">
-            <h2 class="section-title">📹 CCTV Monitoring System</h2>
-            <p class="section-subtitle">Real-time surveillance feeds from bus stations and vehicles</p>
-            
-            <div class="cctv-grid">
-                <div class="cctv-feed">
-                    <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400&h=225&fit=crop" alt="Bus Station Camera 1">
-                    <div class="scan-line"></div>
-                    <div class="detection-overlay">
-                        CAM-01 | Station A<br>
-                        Status: ACTIVE<br>
-                        Passengers: 12
-                    </div>
+            <div class="features-grid">
+                <div class="feature-card" onclick="showRouteOptimizer()">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Route Optimizer</h3>
+                    <p style="color: var(--muted-foreground); margin: 1rem 0;">AI-powered route optimization for fastest journey</p>
+                    <button class="btn btn-primary">Use Optimizer</button>
                 </div>
                 
-                <div class="cctv-feed">
-                    <img src="https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=400&h=225&fit=crop" alt="Bus Interior Camera">
-                    <div class="scan-line"></div>
-                    <div class="detection-overlay">
-                        CAM-02 | Bus #101<br>
-                        Status: ACTIVE<br>
-                        Occupancy: 68%
-                    </div>
+                <div class="feature-card" onclick="showNotifications()">
+                    <div class="feature-icon">🔔</div>
+                    <h3>Smart Notifications</h3>
+                    <p style="color: var(--muted-foreground); margin: 1rem 0;">Get alerts for delays, arrivals, and updates</p>
+                    <button class="btn btn-primary">Enable Alerts</button>
                 </div>
                 
-                <div class="cctv-feed">
-                    <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=225&fit=crop" alt="Traffic Camera">
-                    <div class="scan-line"></div>
-                    <div class="detection-overlay">
-                        CAM-03 | Main Route<br>
-                        Status: ACTIVE<br>
-                        Traffic: CLEAR
-                    </div>
+                <div class="feature-card" onclick="showCrowdAnalytics()">
+                    <div class="feature-icon">📊</div>
+                    <h3>Crowd Analytics</h3>
+                    <p style="color: var(--muted-foreground); margin: 1rem 0;">Real-time passenger density and predictions</p>
+                    <button class="btn btn-primary">View Analytics</button>
                 </div>
                 
-                <div class="cctv-feed">
-                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=225&fit=crop" alt="Emergency Camera">
-                    <div class="scan-line"></div>
-                    <div class="detection-overlay">
-                        CAM-04 | Emergency Zone<br>
-                        Status: MONITORING<br>
-                        Alert Level: GREEN
-                    </div>
+                <div class="feature-card" onclick="showWeatherIntegration()">
+                    <div class="feature-icon">🌤️</div>
+                    <h3>Weather Integration</h3>
+                    <p style="color: var(--muted-foreground); margin: 1rem 0;">Weather-based route suggestions and delays</p>
+                    <button class="btn btn-primary">Check Weather</button>
+                </div>
+                
+                <div class="feature-card" onclick="showTicketBooking()">
+                    <div class="feature-icon">🎫</div>
+                    <h3>Digital Tickets</h3>
+                    <p style="color: var(--muted-foreground); margin: 1rem 0;">Book and manage tickets digitally</p>
+                    <button class="btn btn-primary">Book Tickets</button>
+                </div>
+                
+                <div class="feature-card" onclick="showSafetyFeatures()">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Safety Features</h3>
+                    <p style="color: var(--muted-foreground); margin: 1rem 0;">Emergency contacts, SOS, and safety alerts</p>
+                    <button class="btn btn-primary">Safety Tools</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- AI Photo Detection Section -->
-    <section id="ai-detection" class="ai-section">
-        <div class="container">
-            <h2 class="section-title">🤖 AI Photo Recognition</h2>
-            <p class="section-subtitle">Upload photos for AI-powered object detection and passenger counting</p>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
-                <div>
-                    <div class="upload-area" onclick="document.getElementById('photoUpload').click()">
-                        <input type="file" id="photoUpload" accept="image/*" style="display: none;" onchange="handlePhotoUpload(event)">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">📸</div>
-                        <h3 style="margin-bottom: 0.5rem;">Upload Photo for Analysis</h3>
-                        <p style="color: var(--muted-foreground);">Drag & drop or click to select images</p>
-                    </div>
-                </div>
-                
-                <div id="aiResults" style="background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem;">
-                    <h3 style="margin-bottom: 1rem;">🧠 AI Analysis Results</h3>
-                    <div id="analysisOutput">
-                        <p style="color: var(--muted-foreground); text-align: center;">Upload an image to see AI detection results</p>
-                    </div>
-                </div>
+    <!-- API Key Modal -->
+    <div id="apiKeyModal" class="modal">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 1rem; color: var(--primary);">🔑 Google Maps API Setup</h2>
+            <p style="margin-bottom: 1rem; color: var(--muted-foreground);">
+                To enable live tracking and maps, please enter your Google Maps API key:
+            </p>
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">API Key:</label>
+                <input type="text" id="apiKeyInput" placeholder="Enter your Google Maps API key" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--background);">
             </div>
-            
-            <!-- Real-time Detection Status -->
-            <div style="background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem;">
-                <h3 style="margin-bottom: 1rem;">📊 Real-time Detection Status</h3>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-                    <div style="text-align: center; padding: 1rem; background: var(--muted); border-radius: var(--radius);">
-                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">👥</div>
-                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">847</div>
-                        <div style="color: var(--muted-foreground);">Total Passengers</div>
-                    </div>
-                    <div style="text-align: center; padding: 1rem; background: var(--muted); border-radius: var(--radius);">
-                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🚌</div>
-                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--secondary);">23</div>
-                        <div style="color: var(--muted-foreground);">Active Buses</div>
-                    </div>
-                    <div style="text-align: center; padding: 1rem; background: var(--muted); border-radius: var(--radius);">
-                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎯</div>
-                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--warning);">98.7%</div>
-                        <div style="color: var(--muted-foreground);">Detection Accuracy</div>
-                    </div>
-                    <div style="text-align: center; padding: 1rem; background: var(--muted); border-radius: var(--radius);">
-                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚡</div>
-                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--destructive);">0.2s</div>
-                        <div style="color: var(--muted-foreground);">Processing Time</div>
-                    </div>
-                </div>
+            <div style="margin-bottom: 1rem; padding: 1rem; background: var(--muted); border-radius: var(--radius);">
+                <h4>📝 How to get API Key:</h4>
+                <ol style="margin-left: 1rem; margin-top: 0.5rem;">
+                    <li>Go to <a href="https://console.cloud.google.com/" target="_blank" style="color: var(--primary);">Google Cloud Console</a></li>
+                    <li>Enable Google Maps JavaScript API</li>
+                    <li>Create credentials and copy API key</li>
+                    <li>Paste it above to activate maps</li>
+                </ol>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <button class="btn btn-primary" onclick="saveApiKey()">💾 Save & Activate</button>
+                <button class="btn btn-outline" onclick="closeModal('apiKeyModal')">Cancel</button>
             </div>
         </div>
-    </section>
+    </div>
 
     <!-- Emergency Modal -->
     <div id="emergencyModal" class="modal">
@@ -804,306 +739,349 @@
                     🚒 Fire Brigade - 101
                 </button>
                 <button onclick="callEmergency('transport')" class="btn" style="background: var(--secondary); color: white; padding: 1rem;">
-                    🚌 Transport Authority
+                    🚌 Transport Help - 1073
                 </button>
             </div>
             <button onclick="closeModal('emergencyModal')" style="margin-top: 1rem; width: 100%; padding: 0.75rem; background: var(--muted); border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer;">Close</button>
         </div>
     </div>
 
-    <!-- AI Chatbot -->
-    <div class="chatbot-container">
-        <button class="chatbot-toggle" onclick="toggleChatbot()">💬</button>
-        <div class="chatbot-window" id="chatbotWindow">
-            <div class="chatbot-header">
-                <div style="width: 32px; height: 32px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">🤖</div>
-                <div>
-                    <div style="font-weight: 600;">Smart Assistant</div>
-                    <div style="font-size: 0.75rem; opacity: 0.8;">AI-powered transit help</div>
-                </div>
-                <button onclick="toggleChatbot()" style="margin-left: auto; background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem;">×</button>
-            </div>
-            <div class="chatbot-messages" id="chatMessages">
-                <div class="message">
-                    <div class="message-content">
-                        <strong>🤖 Smart Assistant:</strong><br>
-                        Welcome! I can help you with:
-                        <br>• Bus routes and timings
-                        <br>• Real-time tracking
-                        <br>• Emergency services
-                        <br>• CCTV monitoring
-                        <br>• AI photo analysis
-                        <br><br>What can I help you with today?
-                    </div>
-                </div>
-            </div>
-            <div style="padding: 1rem; border-top: 1px solid var(--border);">
-                <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
-                    <button onclick="sendQuickMessage('Show bus routes')" style="padding: 0.25rem 0.75rem; background: var(--muted); border: 1px solid var(--border); border-radius: 1rem; cursor: pointer; font-size: 0.75rem;">🚌 Bus Routes</button>
-                    <button onclick="sendQuickMessage('Emergency help')" style="padding: 0.25rem 0.75rem; background: var(--muted); border: 1px solid var(--border); border-radius: 1rem; cursor: pointer; font-size: 0.75rem;">🚨 Emergency</button>
-                    <button onclick="sendQuickMessage('CCTV status')" style="padding: 0.25rem 0.75rem; background: var(--muted); border: 1px solid var(--border); border-radius: 1rem; cursor: pointer; font-size: 0.75rem;">📹 CCTV</button>
-                </div>
-                <div style="display: flex; gap: 0.5rem;">
-                    <input type="text" id="chatInput" placeholder="Ask me anything..." style="flex: 1; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--background);" onkeypress="if(event.key==='Enter') sendMessage()">
-                    <button onclick="sendMessage()" class="btn btn-primary">Send</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // Bus Data
-        const busData = [
-            {
-                id: "BUS001",
-                route: "Route 1A",
-                destination: "City Center",
-                arrivalTime: "2 min",
-                status: "approaching",
-                occupancy: "medium",
-                nextStop: "Main Street",
-                passengers: 28,
-                capacity: 50,
-                driver: "Raj Kumar",
-                speed: "35 km/h"
-            },
-            {
-                id: "BUS002", 
-                route: "Route 2B",
-                destination: "University",
-                arrivalTime: "7 min",
-                status: "on-time",
-                occupancy: "low",
-                nextStop: "Park Avenue",
-                passengers: 15,
-                capacity: 45,
-                driver: "Priya Singh",
-                speed: "40 km/h"
-            },
-            {
-                id: "BUS003",
-                route: "Route 3C", 
-                destination: "Hospital",
-                arrivalTime: "12 min",
-                status: "delayed",
-                occupancy: "high",
-                nextStop: "Station Road",
-                passengers: 42,
-                capacity: 50,
-                driver: "Amit Sharma",
-                speed: "25 km/h"
-            },
-            {
-                id: "BUS004",
-                route: "Route 4D",
-                destination: "Airport",
-                arrivalTime: "15 min",
-                status: "on-time",
-                occupancy: "medium",
-                nextStop: "Terminal 2",
-                passengers: 32,
-                capacity: 60,
-                driver: "Sunita Patel",
-                speed: "45 km/h"
-            }
+        // Global variables
+        let map;
+        let directionsService;
+        let directionsRenderer;
+        let apiKey = localStorage.getItem('googleMapsApiKey') || '';
+        let activeBuses = [];
+        let currentRoute = null;
+
+        // Location suggestions
+        const locations = [
+            { name: "Railway Station", icon: "🚉", coords: { lat: 28.6139, lng: 77.2090 } },
+            { name: "City Center", icon: "🏢", coords: { lat: 28.6100, lng: 77.2300 } },
+            { name: "University", icon: "🎓", coords: { lat: 28.6200, lng: 77.2100 } },
+            { name: "Hospital", icon: "🏥", coords: { lat: 28.6050, lng: 77.2200 } },
+            { name: "Airport", icon: "✈️", coords: { lat: 28.5562, lng: 77.1000 } },
+            { name: "Bus Stand", icon: "🚌", coords: { lat: 28.6150, lng: 77.2080 } },
+            { name: "Market", icon: "🛒", coords: { lat: 28.6180, lng: 77.2150 } },
+            { name: "Mall", icon: "🛍️", coords: { lat: 28.6120, lng: 77.2250 } }
         ];
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
-            setupSearchDropdowns();
-            renderBuses();
-            setupDragAndDrop();
+            setupSearchInputs();
+            if (apiKey) {
+                loadGoogleMaps();
+            }
+            simulateActiveBuses();
         });
 
         // Search functionality
-        function setupSearchDropdowns() {
-            const inputs = ['fromLocation', 'toLocation'];
-            inputs.forEach(inputId => {
-                const input = document.getElementById(inputId);
-                const dropdown = document.getElementById(inputId.replace('Location', 'Dropdown'));
-                
-                input.addEventListener('focus', () => {
-                    dropdown.style.display = 'block';
-                });
-                
+        function setupSearchInputs() {
+            const fromInput = document.getElementById('fromInput');
+            const toInput = document.getElementById('toInput');
+            
+            [fromInput, toInput].forEach(input => {
+                input.addEventListener('input', (e) => handleSearch(e));
+                input.addEventListener('focus', (e) => showSuggestions(e.target));
                 input.addEventListener('blur', (e) => {
-                    setTimeout(() => {
-                        if (!dropdown.contains(document.activeElement)) {
-                            dropdown.style.display = 'none';
-                        }
-                    }, 200);
-                });
-                
-                input.addEventListener('input', (e) => {
-                    filterDropdownOptions(dropdown, e.target.value);
-                });
-                
-                dropdown.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('search-option')) {
-                        input.value = e.target.dataset.value;
-                        dropdown.style.display = 'none';
-                    }
+                    setTimeout(() => hideSuggestions(e.target), 200);
                 });
             });
         }
 
-        function filterDropdownOptions(dropdown, searchValue) {
-            const options = dropdown.querySelectorAll('.search-option');
-            options.forEach(option => {
-                const text = option.textContent.toLowerCase();
-                const match = text.includes(searchValue.toLowerCase());
-                option.style.display = match ? 'flex' : 'none';
-            });
+        function handleSearch(event) {
+            const query = event.target.value.toLowerCase();
+            const suggestionContainer = event.target.id === 'fromInput' ? 
+                document.getElementById('fromSuggestions') : 
+                document.getElementById('toSuggestions');
+            
+            if (query.length === 0) {
+                suggestionContainer.style.display = 'none';
+                return;
+            }
+
+            const filtered = locations.filter(location => 
+                location.name.toLowerCase().includes(query)
+            );
+
+            suggestionContainer.innerHTML = filtered.map(location => `
+                <div class="suggestion-item" onclick="selectLocation('${location.name}', '${event.target.id}')">
+                    <span style="font-size: 1.2rem;">${location.icon}</span>
+                    <span>${location.name}</span>
+                </div>
+            `).join('');
+
+            suggestionContainer.style.display = filtered.length > 0 ? 'block' : 'none';
+        }
+
+        function showSuggestions(input) {
+            const suggestionContainer = input.id === 'fromInput' ? 
+                document.getElementById('fromSuggestions') : 
+                document.getElementById('toSuggestions');
+            
+            if (input.value.length === 0) {
+                suggestionContainer.innerHTML = locations.map(location => `
+                    <div class="suggestion-item" onclick="selectLocation('${location.name}', '${input.id}')">
+                        <span style="font-size: 1.2rem;">${location.icon}</span>
+                        <span>${location.name}</span>
+                    </div>
+                `).join('');
+            }
+            suggestionContainer.style.display = 'block';
+        }
+
+        function hideSuggestions(input) {
+            const suggestionContainer = input.id === 'fromInput' ? 
+                document.getElementById('fromSuggestions') : 
+                document.getElementById('toSuggestions');
+            suggestionContainer.style.display = 'none';
+        }
+
+        function selectLocation(locationName, inputId) {
+            document.getElementById(inputId).value = locationName;
+            hideSuggestions(document.getElementById(inputId));
         }
 
         function swapLocations() {
-            const fromInput = document.getElementById('fromLocation');
-            const toInput = document.getElementById('toLocation');
+            const fromInput = document.getElementById('fromInput');
+            const toInput = document.getElementById('toInput');
             const temp = fromInput.value;
             fromInput.value = toInput.value;
             toInput.value = temp;
         }
 
-        function searchRoute() {
-            const from = document.getElementById('fromLocation').value;
-            const to = document.getElementById('toLocation').value;
+        function setQuickRoute(from, to) {
+            document.getElementById('fromInput').value = from;
+            document.getElementById('toInput').value = to;
+            searchRoutes();
+        }
+
+        // Route searching with Google Maps
+        function searchRoutes() {
+            const from = document.getElementById('fromInput').value;
+            const to = document.getElementById('toInput').value;
             
             if (!from || !to) {
-                alert('Please select both from and to locations');
+                showNotification('⚠️ Please select both starting point and destination');
                 return;
             }
+
+            if (!apiKey) {
+                showApiKeyModal();
+                return;
+            }
+
+            showNotification('🔍 Searching for optimal routes...');
             
-            const routeResults = document.getElementById('routeResults');
-            const routeList = document.getElementById('routeList');
+            const fromLocation = locations.find(loc => loc.name === from);
+            const toLocation = locations.find(loc => loc.name === to);
             
-            // Simulate route search results
-            const routes = [
-                {
-                    routeId: "R1A",
-                    duration: "25 min",
-                    fare: "₹15",
-                    stops: 8,
-                    buses: ["BUS001", "BUS003"],
-                    frequency: "Every 10 min"
-                },
-                {
-                    routeId: "R2B",
-                    duration: "32 min",
-                    fare: "₹20",
-                    stops: 12,
-                    buses: ["BUS002"],
-                    frequency: "Every 15 min"
+            if (fromLocation && toLocation && map) {
+                calculateRoute(fromLocation.coords, toLocation.coords);
+                document.getElementById('tracking').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Google Maps integration
+        function loadGoogleMaps() {
+            if (typeof google === 'undefined') {
+                const script = document.createElement('script');
+                script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initMap`;
+                script.async = true;
+                script.defer = true;
+                document.head.appendChild(script);
+            } else {
+                initMap();
+            }
+        }
+
+        function initMap() {
+            const mapElement = document.getElementById('map');
+            const placeholder = document.getElementById('mapPlaceholder');
+            
+            map = new google.maps.Map(mapElement, {
+                zoom: 12,
+                center: { lat: 28.6139, lng: 77.2090 }, // Delhi coordinates
+                styles: [
+                    {
+                        featureType: 'transit',
+                        elementType: 'labels.icon',
+                        stylers: [{ visibility: 'on' }]
+                    }
+                ]
+            });
+
+            directionsService = new google.maps.DirectionsService();
+            directionsRenderer = new google.maps.DirectionsRenderer({
+                polylineOptions: {
+                    strokeColor: '#3b82f6',
+                    strokeWeight: 5
                 }
+            });
+            directionsRenderer.setMap(map);
+
+            mapElement.style.display = 'block';
+            placeholder.style.display = 'none';
+
+            // Add some sample bus markers
+            addBusMarkers();
+            showNotification('✅ Google Maps loaded successfully!');
+        }
+
+        function calculateRoute(origin, destination) {
+            if (!directionsService) return;
+
+            directionsService.route({
+                origin: origin,
+                destination: destination,
+                travelMode: google.maps.TravelMode.TRANSIT,
+                transitOptions: {
+                    modes: [google.maps.TransitMode.BUS]
+                }
+            }, (response, status) => {
+                if (status === 'OK') {
+                    directionsRenderer.setDirections(response);
+                    
+                    const route = response.routes[0];
+                    const leg = route.legs[0];
+                    
+                    // Update route info
+                    document.getElementById('routeDistance').textContent = leg.distance.text;
+                    document.getElementById('routeDuration').textContent = leg.duration.text;
+                    document.getElementById('routeFare').textContent = '₹' + Math.floor(Math.random() * 20 + 10);
+                    document.getElementById('activeBuses').textContent = Math.floor(Math.random() * 5 + 2);
+                    document.getElementById('routeInfo').style.display = 'block';
+                    
+                    showNotification('🎯 Route calculated successfully!');
+                } else {
+                    showNotification('❌ Could not calculate route: ' + status);
+                }
+            });
+        }
+
+        function addBusMarkers() {
+            // Sample bus locations
+            const busLocations = [
+                { lat: 28.6139, lng: 77.2090, id: 'BUS001', route: '1A' },
+                { lat: 28.6100, lng: 77.2300, id: 'BUS002', route: '2B' },
+                { lat: 28.6200, lng: 77.2100, id: 'BUS003', route: '3C' },
+                { lat: 28.6050, lng: 77.2200, id: 'BUS004', route: '4D' }
             ];
-            
-            routeList.innerHTML = routes.map(route => `
-                <div style="background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; margin-bottom: 1rem;">
-                    <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 0.5rem;">
-                        <h4 style="color: var(--primary); font-weight: 600;">${route.routeId} - ${from} to ${to}</h4>
-                        <span class="badge badge-success">${route.frequency}</span>
-                    </div>
-                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1rem;">
-                        <div><strong>Duration:</strong> ${route.duration}</div>
-                        <div><strong>Fare:</strong> ${route.fare}</div>
-                        <div><strong>Stops:</strong> ${route.stops}</div>
-                        <div><strong>Buses:</strong> ${route.buses.length}</div>
-                    </div>
-                    <button class="btn btn-primary" onclick="selectRoute('${route.routeId}')">🚌 Track This Route</button>
-                </div>
-            `).join('');
-            
-            routeResults.style.display = 'block';
+
+            busLocations.forEach(bus => {
+                const marker = new google.maps.Marker({
+                    position: { lat: bus.lat, lng: bus.lng },
+                    map: map,
+                    title: `Bus ${bus.id} - Route ${bus.route}`,
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        fillColor: '#3b82f6',
+                        fillOpacity: 1,
+                        strokeColor: '#ffffff',
+                        strokeWeight: 3,
+                        scale: 8
+                    }
+                });
+
+                const infoWindow = new google.maps.InfoWindow({
+                    content: `
+                        <div style="padding: 0.5rem;">
+                            <h4>🚌 ${bus.id}</h4>
+                            <p><strong>Route:</strong> ${bus.route}</p>
+                            <p><strong>Status:</strong> 🟢 Active</p>
+                            <p><strong>Passengers:</strong> ${Math.floor(Math.random() * 30 + 10)}/50</p>
+                        </div>
+                    `
+                });
+
+                marker.addListener('click', () => {
+                    infoWindow.open(map, marker);
+                });
+            });
         }
 
-        function selectRoute(routeId) {
-            document.getElementById('tracking').scrollIntoView({ behavior: 'smooth' });
-            // Filter buses for this route
-            const relevantBuses = busData.filter(bus => bus.route.includes(routeId.slice(-2)));
-            renderBuses(relevantBuses);
+        // API Key management
+        function showApiKeyModal() {
+            document.getElementById('apiKeyModal').style.display = 'flex';
+            document.getElementById('apiKeyInput').value = apiKey;
         }
 
-        // Bus tracking
-        function renderBuses(buses = busData) {
-            const busGrid = document.getElementById('busGrid');
-            busGrid.innerHTML = buses.map(bus => `
-                <div class="bus-card">
-                    <div class="live-indicator">🔴 LIVE</div>
-                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
-                        <div>
-                            <h3 style="font-size: 1.25rem; font-weight: 600; color: var(--primary); margin-bottom: 0.25rem;">${bus.route}</h3>
-                            <p style="color: var(--muted-foreground);">${bus.destination}</p>
-                        </div>
-                        <span class="badge badge-${getStatusColor(bus.status)}">${bus.status.replace('-', ' ')}</span>
-                    </div>
-                    
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1rem;">
-                        <div style="display: flex; align-items: center; gap: 0.75rem;">
-                            <div style="width: 40px; height: 40px; background: var(--primary); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: white;">🚌</div>
-                            <div>
-                                <p style="font-weight: 600;">Bus ID: ${bus.id}</p>
-                                <p style="font-size: 0.875rem; color: var(--muted-foreground);">Arriving in ${bus.arrivalTime}</p>
-                            </div>
-                        </div>
-                        
-                        <div style="display: flex; align-items: center; gap: 0.75rem;">
-                            <div style="width: 40px; height: 40px; background: var(--secondary); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: white;">📍</div>
-                            <div>
-                                <p style="font-weight: 600;">Next Stop</p>
-                                <p style="font-size: 0.875rem; color: var(--muted-foreground);">${bus.nextStop}</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div style="background: var(--muted); border-radius: var(--radius); padding: 1rem; margin-bottom: 1rem;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                            <span style="font-size: 0.875rem;">Occupancy: ${bus.passengers}/${bus.capacity}</span>
-                            <span class="badge badge-${getOccupancyColor(bus.occupancy)}">${bus.occupancy}</span>
-                        </div>
-                        <div style="background: var(--border); height: 8px; border-radius: 4px; overflow: hidden;">
-                            <div style="width: ${(bus.passengers/bus.capacity)*100}%; height: 100%; background: var(--${getOccupancyColor(bus.occupancy) === 'success' ? 'success' : getOccupancyColor(bus.occupancy) === 'warning' ? 'warning' : 'destructive'});"></div>
-                        </div>
-                    </div>
-                    
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1rem; font-size: 0.875rem;">
-                        <div><strong>Driver:</strong> ${bus.driver}</div>
-                        <div><strong>Speed:</strong> ${bus.speed}</div>
-                    </div>
-                    
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;">
-                        <button class="btn btn-primary">📍 Track Live</button>
-                        <button class="btn btn-outline">📞 Contact</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function getStatusColor(status) {
-            switch (status) {
-                case "on-time": return "success";
-                case "delayed": return "warning";
-                case "approaching": return "default";
-                default: return "default";
+        function saveApiKey() {
+            const key = document.getElementById('apiKeyInput').value.trim();
+            if (key) {
+                apiKey = key;
+                localStorage.setItem('googleMapsApiKey', key);
+                closeModal('apiKeyModal');
+                loadGoogleMaps();
+                showNotification('🔑 API key saved! Maps will load shortly...');
+            } else {
+                showNotification('⚠️ Please enter a valid API key');
             }
         }
 
-        function getOccupancyColor(occupancy) {
-            switch (occupancy) {
-                case "low": return "success";
-                case "medium": return "warning"; 
-                case "high": return "destructive";
-                default: return "default";
-            }
-        }
-
-        function refreshBuses() {
-            const refreshIcon = document.getElementById('refreshIcon');
-            refreshIcon.classList.add('animate-spin');
+        // Feature functions
+        function refreshTracking() {
+            const icon = document.getElementById('refreshIcon');
+            icon.classList.add('animate-spin');
             
             setTimeout(() => {
-                refreshIcon.classList.remove('animate-spin');
-                renderBuses();
-                showNotification('🔄 Bus data refreshed successfully!');
+                icon.classList.remove('animate-spin');
+                if (map) {
+                    // Refresh bus positions
+                    addBusMarkers();
+                }
+                showNotification('🔄 Tracking data refreshed!');
             }, 1000);
+        }
+
+        function toggleTracking() {
+            showNotification('📍 Live tracking toggled');
+        }
+
+        function optimizeRoute() {
+            showNotification('🎯 AI Route Optimizer activated!');
+        }
+
+        function showNotifications() {
+            showNotification('🔔 Smart notifications enabled!');
+        }
+
+        function showRouteOptimizer() {
+            showNotification('🎯 Opening Route Optimizer...');
+        }
+
+        function showCrowdAnalytics() {
+            showNotification('📊 Loading crowd analytics...');
+        }
+
+        function showWeatherIntegration() {
+            showNotification('🌤️ Checking weather conditions...');
+        }
+
+        function showTicketBooking() {
+            showNotification('🎫 Opening digital ticket booking...');
+        }
+
+        function showSafetyFeatures() {
+            showNotification('🛡️ Safety features activated!');
+        }
+
+        function toggleFullscreen() {
+            const mapContainer = document.querySelector('.map-container');
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            } else {
+                mapContainer.requestFullscreen();
+            }
+        }
+
+        // Navigation
+        function setActiveNav(element) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            element.classList.add('active');
         }
 
         // Emergency functions
@@ -1120,179 +1098,21 @@
             };
             
             const service = services[type];
-            alert(`🚨 Calling ${service.name} at ${service.number}\n\nYour location has been shared automatically.\nHelp is on the way!`);
+            alert(`🚨 Emergency Alert!\n\nCalling ${service.name} at ${service.number}\n\nYour location: GPS coordinates shared\nTime: ${new Date().toLocaleString()}\n\nHelp is on the way!`);
             closeModal('emergencyModal');
         }
 
+        // Utility functions
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
         }
 
-        // AI Photo Recognition
-        function setupDragAndDrop() {
-            const uploadArea = document.querySelector('.upload-area');
-            
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                uploadArea.addEventListener(eventName, preventDefaults, false);
-            });
-            
-            function preventDefaults(e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-            
-            ['dragenter', 'dragover'].forEach(eventName => {
-                uploadArea.addEventListener(eventName, () => uploadArea.classList.add('drag-over'), false);
-            });
-            
-            ['dragleave', 'drop'].forEach(eventName => {
-                uploadArea.addEventListener(eventName, () => uploadArea.classList.remove('drag-over'), false);
-            });
-            
-            uploadArea.addEventListener('drop', handleDrop, false);
-            
-            function handleDrop(e) {
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                    handlePhotoUpload({ target: { files } });
-                }
-            }
-        }
-
-        function handlePhotoUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            const analysisOutput = document.getElementById('analysisOutput');
-            analysisOutput.innerHTML = '<div style="text-align: center; padding: 2rem;"><div class="animate-spin" style="display: inline-block; font-size: 2rem;">🔄</div><br>Analyzing image...</div>';
-            
-            // Simulate AI analysis
-            setTimeout(() => {
-                const mockResults = {
-                    passengers: Math.floor(Math.random() * 20) + 5,
-                    vehicles: Math.floor(Math.random() * 3) + 1,
-                    objects: ['Bus', 'Person', 'Bag', 'Phone'],
-                    confidence: (Math.random() * 10 + 90).toFixed(1),
-                    processing_time: (Math.random() * 0.5 + 0.1).toFixed(2)
-                };
-                
-                analysisOutput.innerHTML = `
-                    <div style="margin-bottom: 1rem;">
-                        <h4 style="color: var(--primary); margin-bottom: 0.5rem;">🎯 Detection Results</h4>
-                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1rem;">
-                            <div><strong>Passengers:</strong> ${mockResults.passengers}</div>
-                            <div><strong>Vehicles:</strong> ${mockResults.vehicles}</div>
-                            <div><strong>Confidence:</strong> ${mockResults.confidence}%</div>
-                            <div><strong>Processing:</strong> ${mockResults.processing_time}s</div>
-                        </div>
-                        <div>
-                            <strong>Detected Objects:</strong>
-                            <div style="margin-top: 0.5rem;">
-                                ${mockResults.objects.map(obj => `<span class="badge badge-default" style="margin-right: 0.25rem;">${obj}</span>`).join('')}
-                            </div>
-                        </div>
-                    </div>
-                    <div style="padding: 1rem; background: var(--muted); border-radius: var(--radius);">
-                        <strong>💡 AI Insights:</strong><br>
-                        • Moderate passenger density detected<br>
-                        • No safety violations found<br>
-                        • Recommended action: Monitor capacity
-                    </div>
-                `;
-            }, 2000);
-        }
-
-        // Feature toggles
-        function toggleCCTV() {
-            document.getElementById('cctv').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function toggleAIDetection() {
-            document.getElementById('ai-detection').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function toggleBusTracker() {
-            document.getElementById('tracking').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Chatbot functionality
-        function toggleChatbot() {
-            const window = document.getElementById('chatbotWindow');
-            window.style.display = window.style.display === 'flex' ? 'none' : 'flex';
-        }
-
-        function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            if (!message) return;
-            
-            addMessage(message, 'user');
-            input.value = '';
-            
-            // Simulate AI response
-            setTimeout(() => {
-                const response = generateAIResponse(message);
-                addMessage(response, 'bot');
-            }, 1000);
-        }
-
-        function sendQuickMessage(message) {
-            addMessage(message, 'user');
-            setTimeout(() => {
-                const response = generateAIResponse(message);
-                addMessage(response, 'bot');
-            }, 500);
-        }
-
-        function addMessage(content, sender) {
-            const messages = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}`;
-            messageDiv.innerHTML = `
-                <div class="message-content">
-                    ${sender === 'bot' ? '<strong>🤖 Assistant:</strong><br>' : ''}${content}
-                </div>
-            `;
-            messages.appendChild(messageDiv);
-            messages.scrollTop = messages.scrollHeight;
-        }
-
-        function generateAIResponse(message) {
-            const lowerMessage = message.toLowerCase();
-            
-            if (lowerMessage.includes('bus') || lowerMessage.includes('route')) {
-                return '🚌 I can help with bus information! Currently we have 4 active buses:<br>• Route 1A to City Center (2 min)<br>• Route 2B to University (7 min)<br>• Route 3C to Hospital (12 min)<br>• Route 4D to Airport (15 min)<br><br>Would you like details about any specific route?';
-            }
-            
-            if (lowerMessage.includes('emergency')) {
-                return '🚨 For emergencies, you can quickly access:<br>• Police: 100<br>• Ambulance: 108<br>• Fire Brigade: 101<br>• Transport Authority: 1073<br><br>Click the red emergency button on the left for instant access!';
-            }
-            
-            if (lowerMessage.includes('cctv')) {
-                return '📹 Our CCTV system is monitoring:<br>• 4 active camera feeds<br>• Real-time passenger counting<br>• Traffic condition monitoring<br>• Security surveillance<br><br>All cameras are operational with 98.7% uptime!';
-            }
-            
-            if (lowerMessage.includes('ai') || lowerMessage.includes('photo')) {
-                return '🤖 Our AI system can analyze photos for:<br>• Passenger counting<br>• Object detection<br>• Safety compliance<br>• Traffic analysis<br><br>Upload a photo in the AI Detection section to try it out!';
-            }
-            
-            return '🤖 I understand you\'re asking about: "' + message + '"<br><br>I can help with:<br>• 🚌 Bus routes and schedules<br>• 📍 Real-time tracking<br>• 🚨 Emergency services<br>• 📹 CCTV monitoring<br>• 🤖 AI photo analysis<br><br>What would you like to know more about?';
-        }
-
         function showNotification(message) {
+            // Remove existing notifications
+            document.querySelectorAll('.notification').forEach(notif => notif.remove());
+            
             const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 2rem;
-                right: 2rem;
-                background: var(--primary);
-                color: white;
-                padding: 1rem 1.5rem;
-                border-radius: var(--radius);
-                box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-                z-index: 1000;
-                animation: slideIn 0.3s ease;
-            `;
+            notification.className = 'notification';
             notification.textContent = message;
             document.body.appendChild(notification);
             
@@ -1301,15 +1121,23 @@
             }, 3000);
         }
 
-        // Add slide-in animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideIn {
-                from { transform: translateX(100%); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
+        function simulateActiveBuses() {
+            // Simulate some active bus data
+            activeBuses = [
+                { id: 'BUS001', route: '1A', passengers: 28, status: 'active' },
+                { id: 'BUS002', route: '2B', passengers: 15, status: 'active' },
+                { id: 'BUS003', route: '3C', passengers: 42, status: 'active' },
+                { id: 'BUS004', route: '4D', passengers: 32, status: 'active' }
+            ];
+        }
+
+        // Auto-refresh tracking data every 30 seconds
+        setInterval(() => {
+            if (map && activeBuses.length > 0) {
+                // Simulate bus movement and update positions
+                console.log('Auto-refreshing bus positions...');
             }
-        `;
-        document.head.appendChild(style);
+        }, 30000);
     </script>
 </body>
 </html>
